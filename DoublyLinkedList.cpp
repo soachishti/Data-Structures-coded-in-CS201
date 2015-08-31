@@ -6,9 +6,10 @@ using namespace std;
 struct node {
     int info;
     node *next = NULL;
+    node *prev = NULL;
 };
 
-class LinkedList {
+class DoublyLinkedList {
     private:    
     int size = 0;
     node *head = NULL;
@@ -36,67 +37,68 @@ class LinkedList {
             tmp = new node;
             tmp->info = data;
             tmp->next = head;
+            head->prev = tmp;
             head = tmp;
         }
         size++;
     }
 
     void insertAfter(int key, int data) {
-        if (!tmp) return;       
         tmp = head;
+        if(!tmp) return;
         do {
             if (tmp->info == key) break;   
         }
         while (tmp = tmp->next);
-
-        if(!tmp) return;
     
-        tmp2 = new node;
-        tmp2->info = data;
+        node *tmp1 = new node;
+        tmp1->info = data;
         
-        tmp2->next = tmp->next;
-        tmp->next = tmp2;
-            
+        tmp1->next = tmp->next;
         
+        if (tmp->next != NULL) {
+            tmp->next->prev = tmp1;
+        }
+        tmp1->prev = tmp;
+        tmp->next = tmp1;        
         size++;
     }
     
-    void remove(int key) {      
+    void remove(int key) {       
         tmp = head;
-        if (!tmp) return; 
-        tmp2 = NULL;
-        do {
+        if (!tmp) return;
+        
+        while (tmp != NULL) {
             if (tmp->info == key) {
-                if (tmp && tmp2) {
-                    // Remove value in middle
-                    tmp2->next = tmp->next;
-                    delete tmp;
-                    tmp = tmp2;
-                }
-                else if(!tmp2) {
-                    // removing first value
-                    head = tmp->next;
-                    delete tmp;
-                    tmp = head;
+                if(tmp->prev == NULL) {
+                    // If first element
+                    tmp2 = tmp;
+                    tmp = head = tmp->next;
+                    head->prev = NULL;
+                    delete tmp2; 
                 }
                 else {
-                    // removing last value
-                    tmp2->next = NULL;
-                    tmp = NULL;
-                    head = NULL;
+                    // If in the middle
+                    tmp2 = tmp;
+                    tmp->prev->next = tmp->next;
+                    if (tmp->next != NULL) {
+                        // If it is not last element
+                        tmp->next->prev = tmp->prev;
+                    }
+                    tmp = tmp->next;
+                    delete tmp2;
                 }
-            }   
-            
-            // History
-            tmp2 = tmp;
+            }
+            else {            
+                tmp = tmp->next;
+            }
         }
-        while (tmp = tmp->next);
         size--;
     }
     
-    void print() {
-        tmp = head;      
-        if (!tmp) return; 
+    void print() { 
+        tmp = head;
+        if (!tmp) return;
         do {
             cout << tmp->info << endl;
         }  
@@ -105,9 +107,8 @@ class LinkedList {
 };
 
 int main() {
-    LinkedList lst;
+    DoublyLinkedList lst;
     
-    lst.insert(1);
     lst.insert(1);
     lst.insert(1);
     lst.insert(1);
@@ -121,13 +122,20 @@ int main() {
     lst.insert(9);
     lst.insert(10);
     
-    lst.remove(1);  // First element
-    lst.remove(2);  // from mid
-    lst.remove(5);  // from mid
-    lst.remove(10);
+    
+    lst.insertAfter(2, 11);
+    lst.insert(1000);
+    lst.insertAfter(10, 12);
+    
+    lst.remove(1000);  // First element
+    lst.remove(11);  // from mid
+    lst.remove(10);  // First element
+    lst.remove(1); // End
     
     lst.insertAfter(9, 10);   // It will be added after 9 not before because this model is based on LIFO
     lst.insertAfter(10,11);
+    lst.insertAfter(2,1);
+    lst.insertAfter(12,13);
     
     cout << "Location of 9 in LinkedList: " << lst.search(9);
     
