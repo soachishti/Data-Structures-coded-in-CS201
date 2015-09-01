@@ -20,10 +20,10 @@ class DoublyLinkedList {
     node* search(int key) {
         tmp = head;
         if (head != NULL) {
-            do {
+            while(tmp->next != NULL) {
                 if (tmp->info == key) return tmp;                
+                tmp = tmp->next;
             }
-            while (tmp = tmp->next);
         }
         return NULL;
     }
@@ -46,10 +46,10 @@ class DoublyLinkedList {
     void insertAfter(int key, int data) {
         tmp = head;
         if(!tmp) return;
-        do {
-            if (tmp->info == key) break;   
+        while(tmp->next != NULL) {
+            if (tmp->info == key) break;               
+            tmp = tmp->next;
         }
-        while (tmp = tmp->next);
     
         node *tmp1 = new node;
         tmp1->info = data;

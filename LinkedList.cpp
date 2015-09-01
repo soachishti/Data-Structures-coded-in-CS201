@@ -19,10 +19,10 @@ class LinkedList {
     node* search(int key) {
         tmp = head;
         if (head != NULL) {
-            do {
-                if (tmp->info == key) return tmp;                
+            while (tmp->next != NULL) {
+                if (tmp->info == key) return tmp;
+                tmp = tmp->next;
             }
-            while (tmp = tmp->next);
         }
         return NULL;
     }
@@ -44,13 +44,12 @@ class LinkedList {
     void insertAfter(int key, int data) {
         if (!tmp) return;       
         tmp = head;
-        do {
-            if (tmp->info == key) break;   
+        
+        while(tmp->next != NULL) {
+            if (tmp->info == key) break;
+            tmp = tmp->next;
         }
-        while (tmp = tmp->next);
-
-        if(!tmp) return;
-    
+            
         tmp2 = new node;
         tmp2->info = data;
         
@@ -65,7 +64,7 @@ class LinkedList {
         tmp = head;
         if (!tmp) return; 
         tmp2 = NULL;
-        do {
+        while(tmp->next != NULL) {
             if (tmp->info == key) {
                 if (tmp && tmp2) {
                     // Remove value in middle
@@ -89,8 +88,9 @@ class LinkedList {
             
             // History
             tmp2 = tmp;
+            tmp = tmp->next;
         }
-        while (tmp = tmp->next);
+        
         size--;
     }
     
