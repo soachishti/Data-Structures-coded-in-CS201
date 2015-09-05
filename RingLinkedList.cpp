@@ -20,11 +20,12 @@ class RingLinkedList {
     node* search(int key) {
         tmp = head;        
         if (head != NULL) {
-            while (tmp->next != head) {
+            do {
                 if (tmp->info == key) return tmp;
                 
                 tmp = tmp->next;
             }
+            while (tmp != head)
         }
         return NULL;
     }
@@ -60,7 +61,7 @@ class RingLinkedList {
             }
             tmp = tmp->next;
         }
-        while(tmp->next != head);
+        while(tmp != head);
     }
     
     void remove(int key) {      
@@ -84,7 +85,7 @@ class RingLinkedList {
                 tmp = tmp->next;    
             }
         }
-        while(tmp->next != head);
+        while(tmp != head);
     }
     
     void print() {
@@ -94,12 +95,21 @@ class RingLinkedList {
             cout << tmp->info << endl;
             tmp = tmp->next;
         }  
-        while (tmp->next != head);
+        while (tmp != head);
+        
     }
 };
 
 int main() {
     RingLinkedList lst;
+    
+        
+    lst.insert(1);
+    lst.insert(2);
+    lst.insert(3);
+    lst.insert(4);
+    lst.insert(5);
+    lst.print();
     
     lst.insert(1);
     lst.insert(1);
