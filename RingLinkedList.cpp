@@ -22,10 +22,9 @@ class RingLinkedList {
         if (head != NULL) {
             do {
                 if (tmp->info == key) return tmp;
-                
                 tmp = tmp->next;
             }
-            while (tmp != head)
+            while (tmp != head);
         }
         return NULL;
     }
@@ -70,13 +69,32 @@ class RingLinkedList {
         tmp2 = tail;
         
         do {
+            //If all data equal to key is in head
+            removeHeadAgain:
             if (tmp->info == key) {
-                tmp2->next = tmp->next;
                 if(tmp == head) {
-                    head = tmp2->next;
+                    if (head->next == head) {
+                        delete head;
+                        head = NULL;
+                        return;
+                    }
+
+                    tail->next = tmp->next;
+                    head = tmp->next;
+                    delete tmp;
+                    tmp = head;
+                    goto removeHeadAgain;
                 }
-                delete tmp;
-                tmp = tmp2->next;         
+                else {
+                    // Added
+                    if (tmp == tail) 
+                        tail = tmp2;
+                    
+                    tmp2->next = tmp->next;
+                    delete tmp;
+                    tmp = tmp2->next; 
+                }
+                
                 size--;
             }  
             else {
@@ -85,14 +103,22 @@ class RingLinkedList {
                 tmp = tmp->next;    
             }
         }
-        while(tmp != head);
+        while(tmp != head);        
     }
     
     void print() {
         if (!head) return; 
         tmp = head;      
         do {
-            cout << tmp->info << endl;
+            if (tmp == head && tmp == tail)
+                cout << "**" << tmp->info << endl;
+            else if (tmp == head)
+                cout << "*" << tmp->info << endl;
+            else if (tmp == tail)
+                cout << "-" << tmp->info << endl;
+            else
+                cout << tmp->info << endl;
+            
             tmp = tmp->next;
         }  
         while (tmp != head);
@@ -103,18 +129,18 @@ class RingLinkedList {
 int main() {
     RingLinkedList lst;
     
-        
+    lst.insert(1);
+    lst.insert(1);
+
+    lst.insert(1);
     lst.insert(1);
     lst.insert(2);
-    lst.insert(3);
-    lst.insert(4);
-    lst.insert(5);
+
+ 
+    lst.remove(1);
     lst.print();
-    
-    lst.insert(1);
-    lst.insert(1);
-    lst.insert(1);
-    lst.insert(1);
+    system("pause");
+ 
     lst.insert(2);
     lst.insert(3);
     lst.insert(4);
@@ -130,12 +156,13 @@ int main() {
     lst.remove(5);  // from mid
     lst.remove(10);
     
+    lst.insert(2);
+        
     lst.insertAfter(9, 10);   // It will be added after 9 not before because this model is based on LIFO
     lst.insertAfter(10,11);
     
     cout << "Location of 9 in LinkedList: " << lst.search(9);
-    
-    
+        
     cout << endl
          << "List of all data:"
          << endl;
