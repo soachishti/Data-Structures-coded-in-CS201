@@ -30,6 +30,26 @@ public:
 		}
 	}
 
+	void solveRand() {
+		tmp2 = head;
+        node *tmp3;
+        do {
+            for (int i = 0; i < 3 - 2; i++) {
+                tmp2 = tmp2->next;                
+            }
+            cout << "Deleting " << tmp2->info << endl;
+			tmp3 = tmp2->next;      
+            tmp2->next = tmp2->next->next;
+			if (tmp3 == head)
+				head = tmp2->next;
+            delete tmp3;
+            //tmp2 = tmp2->next;
+            Sleep(50);
+		} while (head->next != head);
+
+		cout << head->info << endl;
+	}    
+    
 	void solve() {
 		tmp = head;
 		do {
@@ -41,7 +61,6 @@ public:
 				head = tmp2->next;
 			delete tmp2;
 			tmp = tmp->next;
-            Sleep(50);
 		} while (head->next != head);
 
 		cout << head->info << endl;
@@ -60,7 +79,11 @@ int main() {
 	jp.insert(8);
 	jp.insert(9);
 	jp.insert(10);
-	jp.solve();
+
+	jp.solveRand();
+
+	//jp.solve();
+
 
 	system("pause");
 	return 0;
