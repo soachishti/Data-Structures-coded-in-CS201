@@ -56,7 +56,6 @@ class LinkedList {
         tmp2->next = tmp->next;
         tmp->next = tmp2;
             
-        
         size++;
     }
     

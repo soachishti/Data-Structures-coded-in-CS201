@@ -1,5 +1,6 @@
 #include <iostream>
 #include <cstdlib>
+#include <time.h>
 #include <windows.h>
 using namespace std;
 
@@ -33,23 +34,27 @@ public:
 	void solveRand() {
 		tmp2 = head;
         node *tmp3;
+        int jump = 3;
+        srand(time(NULL));
         do {
-            for (int i = 0; i < 3 - 2; i++) {
+            for (int i = 0; i < jump - 2; i++) {
                 tmp2 = tmp2->next;                
             }
-            cout << "Deleting " << tmp2->info << endl;
-			tmp3 = tmp2->next;      
+            tmp3 = tmp2->next;  
+            cout << "Deleting " << tmp3->info << endl;
             tmp2->next = tmp2->next->next;
 			if (tmp3 == head)
 				head = tmp2->next;
             delete tmp3;
-            //tmp2 = tmp2->next;
+            
+            jump = rand() % 10 + 2; // 2-10
+            
             Sleep(50);
 		} while (head->next != head);
 
 		cout << head->info << endl;
 	}    
-    
+      
 	void solve() {
 		tmp = head;
 		do {
@@ -80,8 +85,7 @@ int main() {
 	jp.insert(9);
 	jp.insert(10);
 
-	jp.solveRand();
-
+	jp.solveRand(); // Random solve
 	//jp.solve();
 
 
