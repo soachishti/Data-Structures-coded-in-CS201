@@ -11,11 +11,12 @@ struct node {
 class LinkedList {
     private:    
     int size = 0;
-    node *head = NULL;
+    
     node *tmp = NULL;
     node *tmp2 = NULL;
     
     public:
+    node *head = NULL;
     node* search(int key) {
         tmp = head;
         if (head != NULL) {
@@ -78,6 +79,7 @@ class LinkedList {
                     tmp = head;
                 }
                 else {
+                    // not required **
                     // removing last value
                     tmp2->next = NULL;
                     tmp = NULL;
@@ -91,6 +93,13 @@ class LinkedList {
         }
         
         size--;
+    }
+    
+    void printRecursive(node *tmp) {
+        if (tmp != NULL) {
+            printRecursive(tmp->next);
+            cout << tmp->info;
+        }
     }
     
     void print() {
@@ -120,6 +129,9 @@ int main() {
     lst.insert(9);
     lst.insert(10);
     
+    lst.print();
+    lst.printRecursive(lst.head);
+    return 0;
     lst.remove(1);  // First element
     lst.remove(2);  // from mid
     lst.remove(5);  // from mid
