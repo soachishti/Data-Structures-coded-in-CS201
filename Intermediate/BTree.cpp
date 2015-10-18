@@ -12,7 +12,6 @@ struct node {
 	node *right, *left;
 };
 
-
 void gotoXY(int x, int y) {
 	COORD coord;
 	coord.X = x;
@@ -35,7 +34,14 @@ int whereY() {
 class Tree {
 private:
 	node *root = NULL;
+	bool flag = false;
+	bool debug = true;
 public:
+
+	void log(const char *msg) {
+		if (debug) cout << msg << endl;
+	}
+
 	node *rootNode() {
 		return root;
 	}
@@ -46,12 +52,11 @@ public:
 			return 1;
 		}
 		else {
-			if (root->info > d) {
+			if (d > root->info) 
 				return search(root->right, d);
-			}
-			else {
+			
+			if (d < root->info) 
 				return search(root->left, d);
-			}
 		}
 	}
 
@@ -64,7 +69,7 @@ public:
 			return;
 		}
 
-		if (root->info > d) {
+		if (d > root->info) {
 			if (root->right == NULL) {
 				root->right = new node;
 				root->right->info = d;
@@ -76,7 +81,7 @@ public:
 				insert(root->right, d);
 		}
 
-		if (root->info < d) {
+		if (d < root->info) {
 			if (root->left == NULL) {
 				root->left = new node;
 				root->left->info = d;
@@ -116,26 +121,120 @@ public:
 		}
 	}
 
-	void remove(node *root, int d, node *parent = NULL) {
+	node* get_decender(node *root) {
+		if (root->left == NULL || root->right == NULL) return root;
+		if (root->left != NULL) return get_decender(root->left);
+		if (root->right != NULL) return get_decender(root->right);
+	}
+
+	void remove(node *root, int d) {
 		if (root == NULL) return;
 
 		if (root->info == d) {
+			
+			// If have both children
+			if (root->right != NULL && root->left != NULL) {
+				// search smallest
+				log("Deleting element with both children.");
 
+				node *tmp = root->right;
+				node *prev = root;
+				while (tmp->left != NULL) {
+					prev = tmp;
+					tmp = tmp->left;
+				}
+				log("Descendent = " + tmp->info);
+
+				if (tmp->right != NULL) {
+					log("Have right element.");
+					root->info = tmp->info;
+					tmp->info = tmp->right->info;		
+					
+					node *tmp2 = tmp->right;
+					tmp->right = tmp->right->right;
+
+					delete tmp2;
+				}
+				else {
+					log("No right element.");
+					root->info = tmp->info;
+					delete prev->left;
+					prev->left = NULL;
+				}
+			}
+			else if (root->right == NULL && root->left != NULL) {
+				if (this->root == root) {
+					log("Setting flag to delete root with only left child.");
+					node *tmp = root;
+					this->root = root->left;
+					delete tmp;
+				}
+				else {
+					log("Setting flag to delete element with only left child.");
+					flag = true;
+				}
+			}
+			else if (root->right != NULL && root->left == NULL) {
+				if (this->root == root) {
+					log("Deleting root with only right child.");
+					node *tmp = root;
+					this->root = root->right;
+					delete tmp;
+				}
+				else {
+					log("Setting flag to delete element with only right child.");
+					flag = true;
+				}
+			}
+			else {
+				if (this->root == root) {
+					log("Deleting root with no child.");
+					delete this->root;
+					this->root = NULL;
+				} 
+				else {
+					log("Flag set for deletion.");
+					flag = true;
+				}
+			}
+			return;
 		}
 
-		if (root->info < d) {
-			remove(root->left, d, parent);
+		if (d < root->info) {
+			log("Going left.");
+			remove(root->left, d);
+			if (flag == true) {
+				log("Deleting left element.");
+				node *tmp = root->left;
+				root->left = root->left->left;
+				delete tmp;
+				flag = false;
+			}
 		}
 
-		if (root->info > d) {
-			remove(root->right, d, parent);
+		if (d > root->info) {
+			log("Going right.");
+			remove(root->right, d);
+			if (flag == true) {
+				log("Deleting right element.");
+				node *tmp = root->right;
+				root->right = root->right->right;
+				delete tmp;
+				flag = false;
+			}
 		}
+		
+
+		return;
 	}
 
-
 	void print(node *n, int x = 40, int y = 0, int isRight = -1) {
-		if (n == NULL) return;
-		
+		if (n == NULL)  {
+			gotoXY(x, y);
+			cout << "Empty";
+			return;
+		}
+
 		if (isRight == 1) {
 			gotoXY(x + 2, y-1);
 			cout << "/";
@@ -149,14 +248,72 @@ public:
 		gotoXY(x, y);
 		cout << n->info << endl;
 
-		if (n->right != NULL) {
-			print(n->right, x-5, y+2, 1);
+		if (n->left != NULL) {
+			print(n->left, x-5, y+2, 1);
 		}
 		
-		if (n->left != NULL) {
-			print(n->left, x+5, y+2, 0);
+		if (n->right != NULL) {
+			print(n->right, x+5, y+2, 0);
 		}
 
+	}
+
+	void inOrder(node *root) {
+		if (root == NULL) {
+			cout << "Empty";
+		}
+		else {
+			if (root->left) inOrder(root->left);
+			cout << root->info << " ";
+			if (root->right) inOrder(root->right);
+		}
+	}
+
+	void preOrder(node *root) {
+		if (root == NULL) {
+			cout << "Empty";
+		}
+		else {
+			cout << root->info << " ";
+			if (root->left) inOrder(root->left);
+			if (root->right) inOrder(root->right);
+		}
+	}
+
+	void postOrder(node *root) {
+		if (root == NULL) {
+			cout << "Empty";
+		}
+		else {
+			if (root->left) inOrder(root->left);
+			if (root->right) inOrder(root->right);
+			cout << root->info << " ";
+		}
+	}
+
+	void descendingOrder(node *root) {
+		if (root == NULL) {
+			cout << "Empty";
+		}
+		else {
+			if (root->right) descendingOrder(root->right);
+			cout << root->info << " ";		
+			if (root->left) descendingOrder(root->left);
+		}
+	}
+
+	int minDepth(node *root) {
+		if (root == NULL) return 0;
+		int left = minDepth(root->left);
+		int right = minDepth(root->right);
+		return (left < right) ? left + 1 : right + 1;
+	}
+
+	int maxDepth(node *root) {
+		if (root == NULL) return 0;
+		int left = maxDepth(root->left);
+		int right = maxDepth(root->right);
+		return (left > right) ? left + 1  : right + 1 ;
 	}
 };
 
@@ -164,6 +321,44 @@ public:
 
 int main() {
 	Tree t;
+	// Sir Input Data
+	t.insert(t.rootNode(), 14);
+	t.insert(t.rootNode(), 15);
+	t.insert(t.rootNode(), 4);
+	t.insert(t.rootNode(), 9);
+	t.insert(t.rootNode(), 7);
+	t.insert(t.rootNode(), 18);
+	t.insert(t.rootNode(), 3);
+	t.insert(t.rootNode(), 5);
+	t.insert(t.rootNode(), 16);
+	t.insert(t.rootNode(), 4);
+	t.insert(t.rootNode(), 20);
+	t.insert(t.rootNode(), 17);
+	t.insert(t.rootNode(), 9);
+	t.insert(t.rootNode(), 14);
+	t.insert(t.rootNode(), 5);
+	t.insert(t.rootNode(), 50);
+	t.insert(t.rootNode(), 60);
+	t.insert(t.rootNode(), 1);
+	
+	t.print(t.rootNode(), 40, whereY());
+	cout << endl << endl << endl;
+
+	cout << t.maxDepth(t.rootNode()) << endl;
+	cout << t.minDepth(t.rootNode()) << endl;
+
+	return 0;
+
+	t.inOrder(t.rootNode());
+	cout << endl;
+	t.preOrder(t.rootNode());
+	cout << endl;
+	t.postOrder(t.rootNode());
+	cout << endl;
+	t.descendingOrder(t.rootNode());
+
+	return 0;
+	
 	t.insert(t.rootNode(), 10);
 	t.insert(t.rootNode(), 5);
 	t.insert(t.rootNode(), 9);
@@ -171,21 +366,42 @@ int main() {
 	t.insert(t.rootNode(), 15);
 	t.insert(t.rootNode(), 30);
 	t.insert(t.rootNode(), 40);
+	t.insert(t.rootNode(), 1);
 
-	
-	cout << t.search(t.rootNode(), 10) << endl;
-	cout << t.search(t.rootNode(), 1) << endl;
-	cout << t.search(t.rootNode(), 2) << endl;
-	cout << t.search(t.rootNode(), 15) << endl;
-	
+	//node *tmp = t.get_decender(t.rootNode()->right);
+	//cout << tmp->info;
 
 
+
+	//cout << t.search(t.rootNode(), 10) << endl;
+	//cout << t.search(t.rootNode(), 1) << endl;
+	//cout << t.search(t.rootNode(), 2) << endl;
+	//cout << t.search(t.rootNode(), 15) << endl;
 	t.print(t.rootNode(), 40, whereY());
 
-	cout << "Destorying" << endl;
-	t.destroy(t.rootNode());
-	
+
+	//t.remove(t.rootNode(), 40);
+	//t.remove(t.rootNode(), 10);
+	//t.remove(t.rootNode(), 9);
+	//t.remove(t.rootNode(), 30);
+	t.remove(t.rootNode(), 30);
+	t.remove(t.rootNode(), 15);
+	t.remove(t.rootNode(), 5);
+	t.remove(t.rootNode(), 9);
+	t.remove(t.rootNode(), 10);		// Error // Root with only on child
+	t.remove(t.rootNode(), 40);
+	t.remove(t.rootNode(), 10);
+
+
+	cout << endl << endl << endl << endl;
 	t.print(t.rootNode(), 40, whereY());
+
+	//cout << "Destorying" << endl;
+	//t.destroy(t.rootNode());
+	//t.print(t.rootNode(), 40, whereY());
+
+
 	cout << endl << endl << endl << endl;
 	return 0;
 }
+ 
