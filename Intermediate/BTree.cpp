@@ -1,8 +1,3 @@
-// Delete element
-// Insert without recursion
-// maxDepth
-// get iter count for search
-
 #include <iostream>
 #include <windows.h>
 using namespace std;
@@ -315,6 +310,13 @@ public:
 		int right = maxDepth(root->right);
 		return (left > right) ? left + 1  : right + 1 ;
 	}
+
+	int nodeCount(node *root) {
+		if (root == NULL) 
+			return 0;
+		else
+			return 1 + nodeCount(root->right) + nodeCount(root->left);
+	}
 };
 
 
@@ -346,6 +348,7 @@ int main() {
 
 	cout << t.maxDepth(t.rootNode()) << endl;
 	cout << t.minDepth(t.rootNode()) << endl;
+	cout << t.nodeCount(t.rootNode()) << endl;
 
 	return 0;
 
