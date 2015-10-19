@@ -1,3 +1,8 @@
+// Delete element
+// Insert without recursion
+// maxDepth
+// get iter count for search
+
 #include <iostream>
 #include <windows.h>
 using namespace std;
@@ -26,13 +31,18 @@ int whereY() {
 	return consoleinfo.dwCursorPosition.Y;
 }
 
+struct LinkedListNode{
+	int id, count;
+	LinkedListNode *next;
+};
+
 class Tree {
 private:
 	node *root = NULL;
 	bool flag = false;
+	LinkedListNode *dupCount = NULL;
 	bool debug = true;
 public:
-
 	void log(const char *msg) {
 		if (debug) cout << msg << endl;
 	}
@@ -89,6 +99,34 @@ public:
 		}
 
 		if (root->info == d) {
+			LinkedListNode *tmp;
+			if (dupCount == NULL) {
+				tmp = new LinkedListNode;
+				tmp->id = root->info;
+				tmp->count = 1;
+				tmp->next = NULL;
+				dupCount = tmp;
+			}
+			else {
+				tmp = dupCount;
+				while (tmp != NULL) {
+					if (tmp->id == root->info) break;
+					tmp = tmp->next;
+				}
+
+				if (tmp == NULL) {
+					tmp = new LinkedListNode;
+					tmp->id = root->info;
+					tmp->count = 1;
+					tmp->next = dupCount;
+					dupCount = tmp;
+				}
+				else {
+					tmp->count++;
+				}
+			}
+
+
 			cout << "Duplicate value found" << endl;
 		}
 	}
@@ -126,7 +164,8 @@ public:
 		if (root == NULL) return;
 
 		if (root->info == d) {
-			
+			delDuplicateInfo(d); // Delete duplicate info as well.
+
 			// If have both children
 			if (root->right != NULL && root->left != NULL) {
 				// search smallest
@@ -224,6 +263,8 @@ public:
 	}
 
 	void print(node *n, int x = 40, int y = 0, int isRight = -1) {
+		int tmpY = whereY();
+
 		if (n == NULL)  {
 			gotoXY(x, y);
 			cout << "Empty";
@@ -250,6 +291,8 @@ public:
 		if (n->right != NULL) {
 			print(n->right, x+5, y+2, 0);
 		}
+
+		gotoXY(0, tmpY + maxDepth(this->root) + 4);
 
 	}
 
@@ -317,6 +360,37 @@ public:
 		else
 			return 1 + nodeCount(root->right) + nodeCount(root->left);
 	}
+
+	void delDuplicateInfo(int key) {
+		LinkedListNode *tmp = dupCount;
+		LinkedListNode *prev = NULL;
+		while (tmp != NULL) {
+			if (tmp->id == key) {
+				if (prev == NULL) {
+					//is head
+					tmp = dupCount->next;
+					delete dupCount;
+					dupCount = tmp;
+				}
+				else {
+					prev->next = tmp->next;
+					delete tmp;
+				}
+				return;
+			}
+			prev = tmp;
+			tmp = tmp->next;
+		}
+	}
+
+	void duplicateList() {
+		LinkedListNode *tmp = dupCount;
+		cout << "INFO\tCOUNT" << endl;
+		while (tmp != NULL) {
+			cout << tmp->id << "\t" << tmp->count << endl;
+			tmp = tmp->next;
+		}
+	}
 };
 
 
@@ -341,14 +415,28 @@ int main() {
 	t.insert(t.rootNode(), 5);
 	t.insert(t.rootNode(), 50);
 	t.insert(t.rootNode(), 60);
+	t.insert(t.rootNode(), 60);
+	t.insert(t.rootNode(), 60);
+	t.insert(t.rootNode(), 60);
 	t.insert(t.rootNode(), 1);
-	
-	t.print(t.rootNode(), 40, whereY());
-	cout << endl << endl << endl;
+	t.insert(t.rootNode(), 1);
+	t.insert(t.rootNode(), 1);
+	t.insert(t.rootNode(), 1);
+	t.insert(t.rootNode(), 1);
+	t.insert(t.rootNode(), 1);
+	t.insert(t.rootNode(), 1);
 
-	cout << t.maxDepth(t.rootNode()) << endl;
-	cout << t.minDepth(t.rootNode()) << endl;
-	cout << t.nodeCount(t.rootNode()) << endl;
+	t.remove(t.rootNode(), 1); // if we remove element with duplicate element then their duplicate info is also deleted
+
+	t.print(t.rootNode(), 40, whereY());
+	//cout << endl << endl << endl;
+
+	t.duplicateList();
+
+	// cout << endl << endl;
+	// cout << t.maxDepth(t.rootNode()) << endl;
+	// cout << t.minDepth(t.rootNode()) << endl;
+	// cout << t.nodeCount(t.rootNode()) << endl;
 
 	return 0;
 
