@@ -426,7 +426,7 @@ int main() {
 	t.insert(t.rootNode(), 1);
 	t.insert(t.rootNode(), 1);
 
-	t.remove(t.rootNode(), 1); // if we remove element with duplicate element then their duplicate info is also deleted
+	//t.remove(t.rootNode(), 1); // if we remove element with duplicate element then their duplicate info is also deleted
 
 	t.print(t.rootNode(), 40, whereY());
 	//cout << endl << endl << endl;
