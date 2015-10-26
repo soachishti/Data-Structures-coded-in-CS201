@@ -77,7 +77,7 @@ public:
 		else if (tmp->info > d) tmp->left = remove(tmp->left, d);
 		else {
 			// Node found
-			log("Value found."); 
+			log("Value found.");
 			if (tmp->right == tmp->left && tmp->left == NULL) {
 				// No child
 				log("Node with no child.");
@@ -166,11 +166,15 @@ public:
 
 	void inOrder(node *root) {
 		if (root == NULL) return;
-		else {
-			inOrder(root->left);
-			cout << root->info << " ";
-			inOrder(root->right);
-		}
+		inOrder(root->left);
+		cout << root->info << " ";
+		inOrder(root->right);
+	}
+
+	node* lca(node *tmp, int d1, int d2) {
+		if (tmp->info < d1 && tmp->info < d2) return lca(tmp->right,d1,d2);
+		else if (tmp->info > d1 && tmp->info < d2) return lca(tmp->left, d1, d2);
+		else return tmp;
 	}
 };
 
@@ -178,7 +182,6 @@ public:
 
 int main() {
 	BSTTree t;
-
 	t.root = t.insert(t.root, 20);
 	t.root = t.insert(t.root, 10);
 	t.root = t.insert(t.root, 30);
@@ -194,7 +197,7 @@ int main() {
 	cout << t.search(5) << endl;
 	cout << t.search(40) << endl;
 
-	
+
 	t.remove(t.root, 5);
 	t.remove(t.root, 20);
 	t.remove(t.root, 10);
