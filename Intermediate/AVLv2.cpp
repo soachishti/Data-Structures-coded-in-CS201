@@ -7,8 +7,8 @@
 #include <windows.h>
 #include <string>
 
-#define LEFT	0
-#define RIGHT	1
+#define LEFT	1
+#define RIGHT	2
 using namespace std;
 
 struct node {
@@ -40,6 +40,7 @@ public:
 	node *root = NULL;
 	bool debug = true;
 	bool flag = false;
+	bool doRotate = true;
 
 	node* balance(node* tmp) {
 		int balanceFactor = diff(tmp);
@@ -128,31 +129,21 @@ public:
 		return NULL;
 	}
 
-	node* remove(node *tmp, int d) {
+	node* _remove(node *tmp, int d, node *parent = NULL, bool direction = NULL) {
 		if (tmp == NULL) return NULL;
 		else if (tmp->info < d || tmp->info > d) {
 			if (tmp->info < d) {
-				tmp->right = remove(tmp->right, d);
+				tmp->right = _remove(tmp->right, d, tmp, RIGHT);
 			}
 			else if (tmp->info > d) {
-				tmp->left = remove(tmp->left, d);
+				tmp->left = _remove(tmp->left, d, tmp, LEFT);
 			}
-			//// Applying cases
-			//if (flag) {
-			//	int balanceFactor = diff(tmp);
-			//	if (balanceFactor == -1 || balanceFactor == 1) {
-			//		// Case one
-			//		flag = true;
-			//	}
-			//	else {
-			//		//tmp = balance(tmp);
-			//	}
-			//}
-			tmp = balance(tmp);
+			if (doRotate) tmp = balance(tmp); // Case 4 a/b and 5 a/b is handled by balance
 		}
 		else {
 			// Node found
 			log("Value found.");
+			int parentBF = diff(parent);
 			if (tmp->right == tmp->left && tmp->left == NULL) {
 				// No child
 				log("Node with no child.");
@@ -179,10 +170,25 @@ public:
 				node* tmp2 = getAncestor(tmp->right);
 				log(tmp->info + "\t" + tmp2->info);
 				tmp->info = tmp2->info;
-				tmp->right = remove(tmp->right, tmp->info);
+				tmp->right = _remove(tmp->right, tmp->info);
 				return tmp;
 			}
+
+			if (
+				(parentBF == 0) ||    // Case 1 a/b
+				(parentBF == 1 && direction == LEFT) ||  // Case 2a
+				(parentBF == -1 && direction == RIGHT)   // Case 2b
+			) {
+				doRotate = false;
+			}
 		}
+		return tmp;
+	}
+
+	node* remove(node *tmp, int d) {
+		doRotate = true;
+		tmp = _remove(tmp, d);
+		doRotate = false;
 		return tmp;
 	}
 
@@ -261,6 +267,8 @@ int main() {
 	t.root = t.insert(t.root, 5);
 	t.root = t.insert(t.root, 6);
 	t.root = t.insert(t.root, 7);
+	t.root = t.insert(t.root, 8);
+	t.root = t.insert(t.root, 9);
 
 	t.root = t.remove(t.root, 1);
 	t.root = t.remove(t.root, 2);

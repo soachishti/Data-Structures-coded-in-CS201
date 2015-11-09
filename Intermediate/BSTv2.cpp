@@ -170,6 +170,53 @@ public:
 		cout << root->info << " ";
 		inOrder(root->right);
 	}
+    
+	int is_full_tree(node *tmp, int depth) {
+		cout << "depth: " << depth << endl;
+		if (tmp == NULL) return 1;
+
+		if (tmp->right != NULL && tmp->left != NULL) {
+			return is_full_tree(tmp->left, depth - 1) && is_full_tree(tmp->right, depth - 1);
+		}
+		else  if (tmp->right == NULL && tmp->left == NULL && depth == 1) {
+			return 1;
+		}
+		else {
+
+			cout << "Zero found " << tmp->info << "\t" << depth << endl;
+			return 0;
+		}
+	}
+    
+    int is_complete_tree(node *tmp, int depth) {
+		cout << "depth: " << depth << endl;
+		if (tmp == NULL) return 1;
+
+		if (tmp->right != NULL && tmp->left != NULL) {
+			if (is_complete_tree(tmp->left, depth - 1) == true) {
+				if (is_complete_tree(tmp->right, depth - 1) == true) {
+					return true;
+				}
+				else {
+					return false;
+				}
+			}
+			else {
+				return false;
+			}
+		}
+		else  if (tmp->right == NULL && tmp->left == NULL || depth == 1) {
+			return 1;
+		}
+		else  if (tmp->left != NULL && tmp->right == NULL || depth == 1) {
+			return 1;
+		}
+		else {
+			cout << "Zero found " << tmp->info << "\t" << depth << endl;
+			return 0;
+		}
+	}
+
 
 	node* lca(node *tmp, int d1, int d2) {
 		if (tmp->info < d1 && tmp->info < d2) return lca(tmp->right,d1,d2);
