@@ -171,6 +171,7 @@ public:
 				log(tmp->info + "\t" + tmp2->info);
 				tmp->info = tmp2->info;
 				tmp->right = _remove(tmp->right, tmp->info);
+				doRotate = true; // After removing element with 0 BF may change doRotate
 				return tmp;
 			}
 
