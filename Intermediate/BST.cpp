@@ -323,8 +323,8 @@ public:
 			cout << "Empty";
 		}
 		else {
-			if (root->left) inOrder(root->left);
-			if (root->right) inOrder(root->right);
+			if (root->left) postOrder(root->left);
+			if (root->right) postOrder(root->right);
 			cout << root->info << " ";
 		}
 	}
