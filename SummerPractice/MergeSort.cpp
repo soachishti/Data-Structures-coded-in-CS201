@@ -45,7 +45,6 @@ void sort(int data[], int start, int end){
         sort(data, start, mid);
         sort(data, mid+1, end);
         merge(data, start, end, mid);
-
     }
 }
 

@@ -113,7 +113,6 @@ public:
 			return NULL;
 		}
 		else {
-
 			if (!flag) tmp->left = insert(tmp->left, nodeLevel + 1);
 			if (!flag) tmp->right = insert(tmp->right, nodeLevel + 1);
 		}
