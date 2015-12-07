@@ -178,6 +178,15 @@ void BucketSort(int list[], int size) {
 	}
 }
 
+
+void MergeSort(int list[], int size, int start = 0, int end = 10) {
+    if (end-start )
+    
+    
+    Merge(list, size, start, end/2);
+    Merge(list, size, end/2, end);
+}
+
 int main() {
 	const int size = 10;
 	//int list[size];// = { 50, 63, 33, 106, 44, 48, 100, 11, 11, 71 };
