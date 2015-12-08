@@ -105,7 +105,7 @@ void BucketSort(int list[], int size) {
 		}
 	}
 	for (int i = 0; i < size; i++) {
-		for (int digit = 0; digit < 10; digit++) {	
+		for (int digit = 0; digit < 10; digit++) {
 			int msb = list[i] % maxDivider;
 			if (maxDivider > 10)
 				msb /= (maxDivider / 10);
@@ -134,7 +134,7 @@ void BucketSort(int list[], int size) {
 							prev->next->data = list[i];
 							prev->next->next = tmp;
 						}
-						
+
 						break;
 					}
 					else if (tmp->next == NULL) {
@@ -149,13 +149,13 @@ void BucketSort(int list[], int size) {
 						tmp = tmp->next;
 					}
 				} // Infinite loop
-				//cout << list[i] << endl;
+				  //cout << list[i] << endl;
 				break;
 			} // Digit found
 		} // digit find
 	} // Digit loop
 
-	// Print
+	  // Print
 	int index = 0;
 	for (int i = 0; i < size; i++) {
 		Bucket *tmp = bucket[i];
@@ -168,7 +168,7 @@ void BucketSort(int list[], int size) {
 				// Bucket *tmp1 = tmp;
 				tmp = tmp->next;
 				// delete tmp1;
-				
+
 			}
 			else {
 				cout << endl;
@@ -178,14 +178,49 @@ void BucketSort(int list[], int size) {
 	}
 }
 
+void MergeSort(int list[], int start, int end, int mid) {
+	int size = end - start + 1;
+	int *tmp = new int[size];
+	int tmpIndex = 0;
 
-void MergeSort(int list[], int size, int start = 0, int end = 10) {
-    if (end-start )
-    
-    
-    Merge(list, size, start, end/2);
-    Merge(list, size, end/2, end);
+	int left = start;
+	int right = mid + 1;
+
+	// Getting sorted data from 
+	while(left <= mid && right <= end) {
+		if (list[left] > list[right])		
+			tmp[tmpIndex] = list[right++];
+		else
+			tmp[tmpIndex] = list[left++];
+		tmpIndex++;
+	}
+
+	// Dealing with remaing element in array
+	while (left <= mid) 
+		tmp[tmpIndex++] = list[left++];
+	
+	while (right <= end)
+		tmp[tmpIndex++] = list[right++];
+	
+	// Putting sorted data into array
+	for (int i = start, tmpIndex = 0; i <= end; i++, tmpIndex++) 
+		list[i] = tmp[tmpIndex];
+	
+	delete[] tmp;
 }
+
+void MergeSortSplit(int list[], int start, int end) {
+	if (start < end) {
+		int mid = (end + start) / 2;
+
+		//cout << start << "\t" << mid << "\t\t" << mid+1 << "\t" << end << endl;
+
+		MergeSortSplit(list, start, mid);
+		MergeSortSplit(list, mid + 1, end);
+		MergeSort(list, start, end, mid);
+	}
+}
+
 
 int main() {
 	const int size = 10;
@@ -197,8 +232,10 @@ int main() {
 
 	//print(list, size);
 	//RadixSort(list, size);
-	print(list, size);
-	BucketSort(list, size);
+	//print(list, size);
+	//BucketSort(list, size);
+
+	MergeSortSplit(list, 0, size-1);
 
 	print(list, size);
 
