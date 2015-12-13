@@ -188,11 +188,15 @@ void MergeSort(int list[], int start, int end, int mid) {
 
 	// Getting sorted data from 
 	while(left <= mid && right <= end) {
-		if (list[left] > list[right])		
-			tmp[tmpIndex] = list[right++];
-		else
-			tmp[tmpIndex] = list[left++];
-		tmpIndex++;
+		if (list[left] > list[right]) {		
+			tmp[tmpIndex] = list[right];
+            right++;
+        }
+		else {
+			tmp[tmpIndex] = list[left];
+            left++;
+        }
+        tmpIndex++;
 	}
 
 	// Dealing with remaing element in array
@@ -211,12 +215,10 @@ void MergeSort(int list[], int start, int end, int mid) {
 
 void MergeSortSplit(int list[], int start, int end) {
 	if (start < end) {
-		int mid = (end + start) / 2;
-
-		//cout << start << "\t" << mid << "\t\t" << mid+1 << "\t" << end << endl;
-
-		MergeSortSplit(list, start, mid);
-		MergeSortSplit(list, mid + 1, end);
+		int mid = (end + start) / 2;        // 0+10 / 2 = 5
+		MergeSortSplit(list, start, mid);   // Left     0-5 -> 0-2 | 3-5
+		MergeSortSplit(list, mid + 1, end); // Right    6-10 -> (10+6)/2        6-8 | 9-10
+   		//cout << start << "-" << mid << "\t\t" << mid+1 << "-" << end << endl;
 		MergeSort(list, start, end, mid);
 	}
 }
@@ -227,7 +229,11 @@ int main() {
 	//int list[size];// = { 50, 63, 33, 106, 44, 48, 100, 11, 11, 71 };
 	int list[size]; // = { 10, 2, 3, 4, 5, 6, 7, 8, 9, 10 };
 	fill(list, size);
-	//InsertionSort(list, size);
+
+    MergeSortSplit(list, 0, 2);
+    
+    return 0;
+    //InsertionSort(list, size);
 	//BubbleSort(list, size);
 
 	//print(list, size);

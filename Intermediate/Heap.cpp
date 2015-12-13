@@ -1,3 +1,5 @@
+//http://www.sanfoundry.com/cpp-program-implement-binary-heap/
+
 #include <iostream>
 using namespace std;
 
@@ -5,7 +7,8 @@ class Heap {
 public:
 	int *store, size;
 	int position = 0;
-	bool debug = false;
+	bool debug = true
+    ;
 	Heap(int s) {
 		size = s;
 		store = new int[s];
@@ -37,23 +40,37 @@ public:
 		}
 	}
 
+	void print() {
+		//cout << position << endl;
+		for (int i = 1; i <= position; i++) {
+			cout << i << ") " << store[i] << endl;
+		}
+	}    
+    
 	void heapifyRoot() {
 		int tmp = 1;
-		while (tmp < position) {
+		while (tmp <= position) {
 			int childLeft = tmp * 2;
 			int childRight = (tmp * 2) + 1;
-			if (childLeft > position) {
+            //cout << tmp << childLeft << " " << childRight << " " << position << endl;
+
+            if (childRight >= position) {
 				store[tmp] = store[position];
 				heapifyUp(tmp);
 				break;
 			}
-			if (store[childLeft] < store[tmp]) {
-				swap(store[childLeft], store[tmp]);
+			if (store[tmp] > store[childLeft] && store[childLeft] <= store[childRight]) {
+                swap(store[childLeft], store[tmp]);
+                tmp = childLeft;
+            }
+            else if (store[tmp] > store[childRight] && store[childRight] <= store[childLeft]) {
+                swap(store[childRight], store[tmp]);
+                tmp = childRight;
 			}
-			if (store[childRight] < store[tmp]) {
-				swap(store[childRight], store[tmp]);
-			}
-			tmp = childLeft;
+            else {
+                cout << "Not possible\n";
+                break;
+            }
 		}
 		position--;
 	}
@@ -68,52 +85,34 @@ public:
 		heapifyRoot();
 		return tmp;
 	}
-
-	void print() {
-		//cout << position << endl;
-		for (int i = 1; i <= position; i++) {
-			cout << i << ") " << store[i] << endl;
-		}
-	}
 };
 int main() {
 	Heap h(256);
-	h.insert(30);
-	h.insert(20);
-	h.insert(10);
-	
-	h.pop();
-
+	h.insert(9);
 	h.insert(5);
-	h.insert(1);
-	h.insert(35);
-	h.insert(15);
+	h.insert(4);
 	h.insert(2);
-	h.insert(5);
-	h.insert(50);
-	h.insert(60);
-	
-	h.pop();
-
-	h.debug = true;
-
-	h.pop();
-	h.pop();
-	h.pop();
-	h.pop();
-	h.pop();
-	h.pop();
-
-	h.insert(10);
-	h.insert(20);
-	h.insert(5);
 	h.insert(1);
+	h.insert(3);
+	h.insert(8);
+	h.insert(9);
+	h.insert(-1);
 	h.insert(0);
-
-	h.pop();
-	h.pop();
-	h.pop();
-	h.pop();
-
-	h.print();
+	h.insert(-2);
+    
+    cout << "Min: " << h.pop() << endl;
+    cout << "Min: " << h.pop() << endl;
+    cout << "Min: " << h.pop() << endl;
+    cout << "Min: " << h.pop() << endl;
+    cout << "Min: " << h.pop() << endl;
+    cout << "Min: " << h.pop() << endl;
+    cout << "Min: " << h.pop() << endl;
+    cout << "Min: " << h.pop() << endl;
+    cout << "Min: " << h.pop() << endl;
+    cout << "Min: " << h.pop() << endl;
+    cout << "Min: " << h.pop() << endl;
+    
+    
+    return 0;
+   	h.print();
 }

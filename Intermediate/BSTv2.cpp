@@ -223,6 +223,30 @@ public:
 		else if (tmp->info > d1 && tmp->info < d2) return lca(tmp->left, d1, d2);
 		else return tmp;
 	}
+    
+    bool isFullBinary(node *tmp, int depth) {
+		if (tmp == NULL) return true;
+		
+		if (tmp->left != NULL && tmp->right != NULL) 
+			return isFullBinary(tmp->left, depth - 1) && isFullBinary(tmp->right, depth - 1);
+
+		if (tmp->left == NULL && tmp->right == NULL && depth == 1) return true;
+		else return false;
+	}
+
+
+	bool isCompleteBinary(node *tmp, int depth) {
+		if (tmp == NULL) return true;
+
+		if (tmp->right != NULL && tmp->left == NULL) return false;
+		
+		if (tmp->left != NULL && tmp->right != NULL)
+			return isCompleteBinary(tmp->left, depth - 1) && isCompleteBinary(tmp->right, depth - 1);
+
+		if (tmp->left == NULL && tmp->right == NULL) return true;
+		if (tmp->left != NULL && tmp->right == NULL) return true;
+		else return false;
+	}
 };
 
 
