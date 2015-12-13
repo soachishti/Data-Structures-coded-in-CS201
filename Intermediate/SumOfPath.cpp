@@ -55,6 +55,7 @@ int main() {
 	t.root = t.insert(t.root, 75);
 	t.root = t.insert(t.root, 100);
 	t.root = t.insert(t.root, 25);
+	t.root = t.insert(t.root, 26);
 	t.root = t.insert(t.root, 15);
 	t.root = t.insert(t.root, 5);
 	
